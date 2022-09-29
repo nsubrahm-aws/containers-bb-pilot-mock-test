@@ -24,7 +24,7 @@ app.get('/ping', (req, res) => {
   })
 })
 
-app.post('/demo/ts', (req, res) => {
+app.get('/demo/ts', (req, res) => {
   tsSvc.getTs({
     requestHeader: req.get('X-Amzn-Trace-Id'),
     rdsConfig: appConfig.rds

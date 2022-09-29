@@ -121,11 +121,11 @@ Populate the following results table.
 1. Get the DNS of ALB provisioned.
 
 ```bash
-ALB_DNS=`kubectl -n mock get ing/demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
+ALB_DNS=`kubectl -n demo get ing/demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
 echo ${ALB_DNS}
 ```
 
-2. Paste the result of API invocation - `http://${ALB_DNS}/demo/ts` and past here.
+2. Paste the result of API invocation - `curl -X GET http://${ALB_DNS}/demo/ts` and past here.
 
 ```json
 ```
