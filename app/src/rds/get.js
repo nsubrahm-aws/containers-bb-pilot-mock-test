@@ -54,15 +54,15 @@ function getTs(req, cb) {
   let requestId = req.requestHeader
   let dbConfig = req.rdsConfig
 
-  let ts = mom().tz(TZ).format('YYYY-MM-DDTHH:mm:ss.SSS')
-
   getToken(dbConfig, requestId, (iamErr, dbToken) => {
     if (iamErr) {
       logger.error(`Request ID: ${requestId} - IAM error - ${iamErr.code} ${iamErr.message}`)
+      cb(iamErr, null)
     } else {
       getDbConnection(dbToken, requestId, (dbErr, conn) => {
         if (dbErr) {
           logger.error(`Request ID: ${requestId} - Database connection error - ${dbErr.code} ${dbErr.message}`)
+          cb(dbErr, null)
         } else {
           let q = `SELECT CURRENT_TIMESTAMP as currentTs;`
           conn.query(q, (qryErr, results, fields) => {
@@ -70,7 +70,7 @@ function getTs(req, cb) {
               logger.error(`Request ID: ${requestId} - Database query error - ${qryErr.code} ${qryErr.message}`)
               cb(qryErr, null)
             } else {
-              cb(null, { ts: results.currentTs })
+              cb(null, { ts: results[0].currentTs })
             }
           })
         }

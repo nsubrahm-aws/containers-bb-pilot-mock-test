@@ -11,7 +11,6 @@ function getAppConfig() {
     }
     if (process.env.REGION) {
       appConfig.rds.region = process.env.REGION
-      appConfig.sns.region = process.env.REGION
     } else {
       logger.error(`Environment variable for region was not found.`)
       return {}
