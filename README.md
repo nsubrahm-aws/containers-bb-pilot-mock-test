@@ -125,7 +125,7 @@ ALB_DNS=`kubectl -n mock get ing/demo -o jsonpath='{.status.loadBalancer.ingress
 echo ${ALB_DNS}
 ```
 
-2. Paste the result of API invocation - `http://${ALB_DNS}/ts` and past here.
+2. Paste the result of API invocation - `http://${ALB_DNS}/demo/ts` and past here.
 
 ```json
 ```
