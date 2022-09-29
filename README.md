@@ -1,92 +1,131 @@
-# AWS Containers Black Belt - Pilot - India - Mock Test
+# Introduction
 
+This repository documents the mock test.
 
+- [Introduction](#introduction)
+  - [Overview](#overview)
+  - [Architecture](#architecture)
+    - [Cloud](#cloud)
+    - [Cluster](#cluster)
+  - [Test](#test)
+    - [Cloud](#cloud-1)
+      - [Amazon RDS](#amazon-rds)
+      - [Amazon CloudWatch](#amazon-cloudwatch)
+      - [Amazon ECR](#amazon-ecr)
+      - [Amazon IAM](#amazon-iam)
+    - [Cluster](#cluster-1)
+      - [Amazon EKS](#amazon-eks)
+      - [Kubernetes objects](#kubernetes-objects)
+    - [Container](#container)
+  - [Result](#result)
+    - [ARN](#arn)
+    - [Kubernetes objects](#kubernetes-objects-1)
+    - [Result of API invocation](#result-of-api-invocation)
 
-## Getting started
+## Overview
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+By end of this mock test, the participants should be able to invoke an API, hosted in Kubernetes cluster, that queries a MySQL database on Amazon RDS successfully.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Architecture
 
-## Add your files
+The participants are expected to implement the following architecture successfully.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Cloud
 
+![cloud](png/arch-cloud.png)
+
+### Cluster
+
+![k8s](png/arch-k8s.png)
+
+## Test
+
+The mock test requires implementation of the architecture diagrams shown above. The requirements can be organised into four sections viz. Cloud, Cluster, Container and Code as seen in the figure below.
+
+![4c](png/4c.png)
+
+- The **Code** layer is already implemented in the `app` folder. Rest of the layers are to be developed.
+- At least, one aspect of Security and monitoring must be implemented.
+- Implementation of automation is optional.
+
+### Cloud
+
+The **Cloud** layer is to be implemented is described in the subsequent sections.
+
+#### Amazon RDS
+
+1. Launch an Amazon RDS database in the default VPC of your AWS account.
+2. Allow traffic into Amazon RDS database from the NAT gateway of the Amazon EKS VPC.
+3. Enable [authentication with IAM](https://aws.amazon.com/premiumsupport/knowledge-center/users-connect-rds-iam/).
+
+#### Amazon CloudWatch
+
+1. Implement at least one [detective control](https://aws.github.io/aws-eks-best-practices/security/docs/detective/) on the Amazon EKS control plane logs.
+2. Enable [Amazon CloudWatch Container Insights](https://www.eksworkshop.com/intermediate/250_cloudwatch_container_insights/) to monitor the performance of the Amazon EKS cluster.
+
+#### Amazon ECR
+
+1. Launch an Amazon ECR registry with at least one of the features enabled.
+   1. Immutable tags.
+   2. Scan on push.
+   3. Encrypted images.
+
+#### Amazon IAM
+
+### Cluster
+
+The **Cluster** layer is to be implemented is described in the subsequent sections.
+
+#### Amazon EKS
+
+1. Launch an Amazon EKS cluster that satisfies the following conditions
+   1. 1 instance of type `t3.small` with label as `workload: web`.
+   2. 1 instance of type `t3.small` with label as `workload: db`.
+
+#### Kubernetes objects
+
+1. `ns/mock`
+2. `mock/deployment/demo`
+3. `mock/svc/demo`
+4. `mock/ing/demo`
+5. `mock/sa/demo`
+
+### Container
+
+1. Create `Dockerfile` to build container image for the application in the `app` folder.
+2. Build and push the container image to Amazon ECR.
+
+## Result
+
+### ARN
+
+Populate the following results table.
+
+| Item       | ARN |
+| ---------- | --- |
+| Amazon RDS |     |
+| AWS IAM    |     |
+| Amazon EKS |     |
+| Amazon ECR |     |
+
+### Kubernetes objects
+
+1. Paste the result of the command `kubectl -n mock get all`.
+
+```bash
+# Run kubectl -n mock get all and paste here.
 ```
-cd existing_repo
-git remote add origin https://gitlab.aws.dev/nsubrahm/containers-black-belt-mock-test.git
-git branch -M main
-git push -uf origin main
+
+### Result of API invocation
+
+1. Get the DNS of ALB provisioned.
+
+```bash
+ALB_DNS=`kubectl -n mock get ing/demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
+echo ${ALB_DNS}
 ```
 
-## Integrate with your tools
+2. Paste the result of API invocation - `http://${ALB_DNS}/ts` and past here.
 
-- [ ] [Set up project integrations](https://gitlab.aws.dev/nsubrahm/containers-black-belt-mock-test/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+```json
+```
