@@ -86,9 +86,10 @@ The **Cluster** layer is to be implemented is described in the subsequent sectio
 
 1. `ns/mock`
 2. `mock/deployment/demo`
-3. `mock/svc/demo`
-4. `mock/ing/demo`
-5. `mock/sa/demo`
+3. `mock/cm/demo`
+4. `mock/svc/demo`
+5. `mock/ing/demo`
+6. `mock/sa/demo`
 
 ### Container
 
@@ -114,6 +115,31 @@ Populate the following results table.
 
 ```bash
 # Run kubectl -n mock get all and paste here.
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/demo-77748bbf6b-xpjmq   1/1     Running   0          24m
+
+NAME           TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/demo   NodePort   10.100.84.135   <none>        80:30797/TCP   39m
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/demo   1/1     1            1           45m
+
+NAME                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/demo-77748bbf6b   1         1         1       45m
+```
+
+2. Describe `demo/sa/demo`.
+
+```bash
+# kubectl -n demo describe sa/demo
+Name:                demo
+Namespace:           demo
+Labels:              app.kubernetes.io/managed-by=eksctl
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::6892xxxxxx07:role/eksctl-mock-addon-iamserviceaccount-demo-dem-Role1-1XFZU62UYF44A
+Image pull secrets:  <none>
+Mountable secrets:   demo-token-2rktf
+Tokens:              demo-token-2rktf
+Events:              <none>
 ```
 
 ### Result of API invocation
@@ -125,7 +151,8 @@ ALB_DNS=`kubectl -n demo get ing/demo -o jsonpath='{.status.loadBalancer.ingress
 echo ${ALB_DNS}
 ```
 
-2. Paste the result of API invocation - `curl -X GET http://${ALB_DNS}/demo/ts` and past here.
+2. Paste the result of API invocation - `curl -s -X GET http://${ALB_DNS}/demo/ts` and past here.
 
 ```json
+{"ts":"2022-09-29T14:50:47.000Z"}
 ```

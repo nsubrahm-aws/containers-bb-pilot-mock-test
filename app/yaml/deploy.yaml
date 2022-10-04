@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: demo
+  name: demo
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo
+    spec:
+      serviceAccountName: demo
+      containers:
+        - name: demo
+          image: accountId.dkr.ecr.regionId.amazonaws.com/mocktest/demo:0.0.0
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: demo
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "64m"
+          ports:
+            - containerPort: 8080
+              protocol: "TCP"
+      nodeSelector:
+        workload: db

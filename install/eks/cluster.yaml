@@ -1,0 +1,17 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: mock
+  region: regionId
+
+managedNodeGroups:
+  - name: ng-db
+    labels: { workload: db }
+    instanceType: t3.small
+    desiredCapacity: 1
+
+  - name: ng-web
+    labels: { workload: web }
+    instanceType: t3.small
+    desiredCapacity: 1
